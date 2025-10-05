@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://your-backend-domain.com',
+  apiBaseUrl: 'https://snippet-manager-en8t.onrender.com',
 };
