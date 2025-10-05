@@ -1,0 +1,123 @@
+<div class="snippet-list-container">
+  <!-- Header -->
+  <div class="page-header">
+    <h1>All Snippets</h1>
+    <div class="header-actions">
+      <button (click)="debugDatabase()" class="btn btn-info">🔍 Debug Database</button>
+      <button (click)="forceReload()" class="btn btn-warning">🔄 Force Reload</button>
+      <button (click)="addTestSnippet()" class="btn btn-secondary">🧪 Add Test Snippet</button>
+      <a routerLink="/snippets/add" class="btn btn-primary"> ➕ Add New Snippet </a>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="filters-section">
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Search snippets..."
+        class="form-control"
+        [value]="searchQuery()"
+        (input)="onSearchInput($event)"
+      />
+    </div>
+
+    <div class="filters">
+      <select class="form-control" [value]="selectedCategory()" (change)="onCategoryChange($event)">
+        <option value="">All Categories</option>
+        <option *ngFor="let category of categories()" [value]="category">
+          {{ category }}
+        </option>
+      </select>
+
+      <select class="form-control" [value]="selectedLanguage()" (change)="onLanguageChange($event)">
+        <option value="">All Languages</option>
+        <option *ngFor="let language of languages()" [value]="language">
+          {{ language }}
+        </option>
+      </select>
+
+      <button
+        class="btn btn-secondary"
+        [class.active]="showFavoritesOnly()"
+        (click)="onFavoritesToggle()"
+      >
+        ⭐ Favorites Only
+      </button>
+
+      <button class="btn btn-outline" (click)="clearFilters()">🗑️ Clear Filters</button>
+    </div>
+  </div>
+
+  <!-- Results Count -->
+  <div class="results-info">
+    <p>{{ filteredSnippets().length }} snippet(s) found</p>
+  </div>
+
+  <!-- Snippets Grid -->
+  <div class="snippets-grid" *ngIf="filteredSnippets().length > 0">
+    <div class="snippet-card" *ngFor="let snippet of filteredSnippets()">
+      <div class="snippet-header">
+        <h3>{{ snippet.title }}</h3>
+        <div class="snippet-actions">
+          <button
+            class="btn-icon"
+            [class.favorited]="snippet.isFavorite"
+            (click)="toggleFavorite(snippet)"
+            title="Toggle Favorite"
+          >
+            ⭐
+          </button>
+          <button
+            class="btn-icon btn-danger"
+            (click)="deleteSnippet(snippet.id)"
+            title="Delete Snippet"
+          >
+            🗑️
+          </button>
+        </div>
+      </div>
+
+      <div class="snippet-meta">
+        <span class="language-badge" [style.background-color]="getLanguageColor(snippet.language)">
+          {{ snippet.language }}
+        </span>
+        <span class="category-badge">{{ snippet.category }}</span>
+        <span class="date">{{ formatDate(snippet.updatedAt) }}</span>
+      </div>
+
+      <p class="snippet-description">{{ snippet.description }}</p>
+
+      <div class="code-preview">
+        <pre><code>{{ getSnippetPreview(snippet.code) }}</code></pre>
+      </div>
+
+      <div class="snippet-tags">
+        <span class="tag" *ngFor="let tag of snippet.tags.slice(0, 4)"> #{{ tag }} </span>
+        <span class="tag-more" *ngIf="snippet.tags.length > 4">
+          +{{ snippet.tags.length - 4 }} more
+        </span>
+      </div>
+
+      <div class="snippet-footer">
+        <a [routerLink]="['/snippets', snippet.id]" class="btn btn-sm btn-primary">
+          View Details
+        </a>
+        <a [routerLink]="['/snippets/edit', snippet.id]" class="btn btn-sm btn-secondary"> Edit </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="filteredSnippets().length === 0">
+    <div class="empty-icon">🔍</div>
+    <h2>No Snippets Found</h2>
+    <p *ngIf="searchQuery() || selectedCategory() || selectedLanguage() || showFavoritesOnly()">
+      Try adjusting your search criteria or clear the filters.
+    </p>
+    <p *ngIf="!searchQuery() && !selectedCategory() && !selectedLanguage() && !showFavoritesOnly()">
+      Start building your code library by adding your first snippet!
+    </p>
+    <a routerLink="/snippets/add" class="btn btn-primary btn-lg"> Add Your First Snippet </a>
+  </div>
+</div>

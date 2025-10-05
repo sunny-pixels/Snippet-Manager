@@ -1,0 +1,171 @@
+<div class="search-container">
+  <div class="search-header">
+    <h1>Advanced Search</h1>
+    <p>Find snippets using multiple criteria</p>
+  </div>
+
+  <div class="search-form">
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Search snippets by title, description, or code..."
+        class="form-control search-input"
+        [value]="searchQuery()"
+        (input)="onSearchInput($event)"
+      />
+      <button class="btn btn-primary" (click)="onSearch()">🔍 Search</button>
+    </div>
+
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label class="form-label">Category</label>
+        <select
+          class="form-control"
+          [value]="selectedCategory()"
+          (change)="onCategoryChange($event)"
+        >
+          <option value="">All Categories</option>
+          <option *ngFor="let category of categories()" [value]="category">
+            {{ category }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="form-label">Language</label>
+        <select
+          class="form-control"
+          [value]="selectedLanguage()"
+          (change)="onLanguageChange($event)"
+        >
+          <option value="">All Languages</option>
+          <option *ngFor="let language of languages()" [value]="language">
+            {{ language }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="form-label">Date From</label>
+        <input
+          type="date"
+          class="form-control"
+          [value]="dateFrom()"
+          (change)="onDateFromChange($event)"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label class="form-label">Date To</label>
+        <input
+          type="date"
+          class="form-control"
+          [value]="dateTo()"
+          (change)="onDateToChange($event)"
+        />
+      </div>
+    </div>
+
+    <div class="tags-filter">
+      <label class="form-label">Tags</label>
+      <div class="tags-container">
+        <span
+          class="tag"
+          [class.selected]="selectedTags().includes(tag)"
+          *ngFor="let tag of tags()"
+          (click)="onTagToggle(tag)"
+        >
+          #{{ tag }}
+        </span>
+      </div>
+    </div>
+
+    <div class="filter-actions">
+      <label class="checkbox-label">
+        <input
+          type="checkbox"
+          [checked]="showFavoritesOnly()"
+          (change)="showFavoritesOnly.set($event.target.checked); onSearch()"
+        />
+        <span class="checkmark"></span>
+        Favorites only
+      </label>
+
+      <button class="btn btn-outline" (click)="clearFilters()">🗑️ Clear All Filters</button>
+    </div>
+  </div>
+
+  <div class="results-section">
+    <div class="results-header">
+      <h2>Search Results</h2>
+      <span class="results-count">{{ filteredSnippets().length }} snippet(s) found</span>
+    </div>
+
+    <div class="snippets-grid" *ngIf="filteredSnippets().length > 0">
+      <div class="snippet-card" *ngFor="let snippet of filteredSnippets()">
+        <div class="snippet-header">
+          <h3>{{ snippet.title }}</h3>
+          <div class="snippet-meta">
+            <span
+              class="language-badge"
+              [style.background-color]="getLanguageColor(snippet.language)"
+            >
+              {{ snippet.language }}
+            </span>
+            <span class="date">{{ formatDate(snippet.updatedAt) }}</span>
+          </div>
+        </div>
+
+        <p class="snippet-description">{{ snippet.description }}</p>
+
+        <div class="code-preview">
+          <pre><code>{{ getSnippetPreview(snippet.code) }}</code></pre>
+        </div>
+
+        <div class="snippet-tags">
+          <span class="tag" *ngFor="let tag of snippet.tags.slice(0, 3)"> #{{ tag }} </span>
+          <span class="tag-more" *ngIf="snippet.tags.length > 3">
+            +{{ snippet.tags.length - 3 }} more
+          </span>
+        </div>
+
+        <div class="snippet-actions">
+          <a [routerLink]="['/snippets', snippet.id]" class="btn btn-sm btn-primary">
+            View Details
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="no-results"
+      *ngIf="
+        filteredSnippets().length === 0 &&
+        (searchQuery() ||
+          selectedCategory() ||
+          selectedLanguage() ||
+          selectedTags().length > 0 ||
+          showFavoritesOnly())
+      "
+    >
+      <div class="no-results-icon">🔍</div>
+      <h3>No Results Found</h3>
+      <p>Try adjusting your search criteria or clear the filters.</p>
+    </div>
+
+    <div
+      class="search-prompt"
+      *ngIf="
+        !searchQuery() &&
+        !selectedCategory() &&
+        !selectedLanguage() &&
+        selectedTags().length === 0 &&
+        !showFavoritesOnly()
+      "
+    >
+      <div class="search-prompt-icon">🔍</div>
+      <h3>Start Your Search</h3>
+      <p>Enter a search term or use the filters above to find your snippets.</p>
+    </div>
+  </div>
+</div>

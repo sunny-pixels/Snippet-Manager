@@ -1,0 +1,61 @@
+<div class="snippet-detail-container" *ngIf="snippet()">
+  <div class="snippet-header">
+    <div class="snippet-title-section">
+      <h1>{{ snippet()!.title }}</h1>
+      <div class="snippet-meta">
+        <span
+          class="language-badge"
+          [style.background-color]="getLanguageColor(snippet()!.language)"
+        >
+          {{ snippet()!.language }}
+        </span>
+        <span class="category-badge">{{ snippet()!.category }}</span>
+        <span class="date">{{ formatDate(snippet()!.updatedAt) }}</span>
+      </div>
+    </div>
+
+    <div class="snippet-actions">
+      <button
+        class="btn btn-icon"
+        [class.favorited]="snippet()!.isFavorite"
+        (click)="toggleFavorite()"
+        title="Toggle Favorite"
+      >
+        ⭐
+      </button>
+      <button class="btn btn-secondary" (click)="copyToClipboard()">📋 Copy Code</button>
+      <a [routerLink]="['/snippets/edit', snippet()!.id]" class="btn btn-primary"> ✏️ Edit </a>
+      <button class="btn btn-danger" (click)="deleteSnippet()">🗑️ Delete</button>
+    </div>
+  </div>
+
+  <div class="snippet-content">
+    <div class="snippet-description" *ngIf="snippet()!.description">
+      <h3>Description</h3>
+      <p>{{ snippet()!.description }}</p>
+    </div>
+
+    <div class="snippet-tags" *ngIf="snippet()!.tags.length > 0">
+      <h3>Tags</h3>
+      <div class="tags-container">
+        <span class="tag" *ngFor="let tag of snippet()!.tags"> #{{ tag }} </span>
+      </div>
+    </div>
+
+    <div class="code-section">
+      <div class="code-header">
+        <h3>Code</h3>
+        <span class="language-info">{{ snippet()!.language | titlecase }}</span>
+      </div>
+      <div class="code-container">
+        <pre><code>{{ snippet()!.code }}</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="not-found" *ngIf="!snippet()">
+  <h2>Snippet Not Found</h2>
+  <p>The snippet you're looking for doesn't exist or has been deleted.</p>
+  <a routerLink="/snippets" class="btn btn-primary">Back to Snippets</a>
+</div>

@@ -1,0 +1,151 @@
+<div class="dashboard-container">
+  <!-- Welcome Section -->
+  <div class="welcome-section">
+    <h1>Welcome to Code Snippet Manager</h1>
+    <p>Organize, search, and manage your code snippets efficiently</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📝</div>
+      <div class="stat-content">
+        <h3>{{ stats().totalSnippets }}</h3>
+        <p>Total Snippets</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📁</div>
+      <div class="stat-content">
+        <h3>{{ stats().totalCategories }}</h3>
+        <p>Categories</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🏷️</div>
+      <div class="stat-content">
+        <h3>{{ stats().totalTags }}</h3>
+        <p>Tags</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">⭐</div>
+      <div class="stat-content">
+        <h3>{{ stats().recentSnippets.length }}</h3>
+        <p>Recent Snippets</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="action-buttons">
+      <a routerLink="/snippets/add" class="btn btn-primary btn-lg"> ➕ Add New Snippet </a>
+      <a routerLink="/search" class="btn btn-secondary btn-lg"> 🔍 Search Snippets </a>
+      <a routerLink="/categories" class="btn btn-success btn-lg"> 📁 Manage Categories </a>
+    </div>
+  </div>
+
+  <!-- Recent Snippets -->
+  <div class="recent-snippets" *ngIf="recentSnippets().length > 0">
+    <div class="section-header">
+      <h2>Recent Snippets</h2>
+      <a routerLink="/snippets" class="view-all-link">View All →</a>
+    </div>
+
+    <div class="snippets-grid">
+      <div class="snippet-card" *ngFor="let snippet of recentSnippets()">
+        <div class="snippet-header">
+          <h3>{{ snippet.title }}</h3>
+          <div class="snippet-meta">
+            <span
+              class="language-badge"
+              [style.background-color]="getLanguageColor(snippet.language)"
+            >
+              {{ snippet.language }}
+            </span>
+            <span class="date">{{ formatDate(snippet.updatedAt) }}</span>
+          </div>
+        </div>
+
+        <p class="snippet-description">{{ snippet.description }}</p>
+
+        <div class="code-preview">
+          <pre><code>{{ getSnippetPreview(snippet.code) }}</code></pre>
+        </div>
+
+        <div class="snippet-tags">
+          <span class="tag" *ngFor="let tag of snippet.tags.slice(0, 3)"> #{{ tag }} </span>
+          <span class="tag-more" *ngIf="snippet.tags.length > 3">
+            +{{ snippet.tags.length - 3 }} more
+          </span>
+        </div>
+
+        <div class="snippet-actions">
+          <a [routerLink]="['/snippets', snippet.id]" class="btn btn-sm btn-primary">
+            View Details
+          </a>
+          <a [routerLink]="['/snippets/edit', snippet.id]" class="btn btn-sm btn-secondary">
+            Edit
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Languages -->
+  <div class="top-languages" *ngIf="stats().topLanguages.length > 0">
+    <h2>Top Languages</h2>
+    <div class="language-list">
+      <div class="language-item" *ngFor="let lang of stats().topLanguages.slice(0, 5)">
+        <div class="language-info">
+          <span class="language-name" [style.color]="getLanguageColor(lang.language)">
+            {{ lang.language }}
+          </span>
+          <span class="language-count">{{ lang.count }} snippets</span>
+        </div>
+        <div class="language-bar">
+          <div
+            class="language-progress"
+            [style.width.%]="(lang.count / stats().topLanguages[0].count) * 100"
+            [style.background-color]="getLanguageColor(lang.language)"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Categories -->
+  <div class="top-categories" *ngIf="stats().topCategories.length > 0">
+    <h2>Top Categories</h2>
+    <div class="category-list">
+      <div class="category-item" *ngFor="let cat of stats().topCategories.slice(0, 5)">
+        <div class="category-info">
+          <span class="category-name" [style.color]="getCategoryColor(cat.category)">
+            {{ cat.category }}
+          </span>
+          <span class="category-count">{{ cat.count }} snippets</span>
+        </div>
+        <div class="category-bar">
+          <div
+            class="category-progress"
+            [style.width.%]="(cat.count / stats().topCategories[0].count) * 100"
+            [style.background-color]="getCategoryColor(cat.category)"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="stats().totalSnippets === 0">
+    <div class="empty-icon">📝</div>
+    <h2>No Snippets Yet</h2>
+    <p>Start building your code library by adding your first snippet!</p>
+    <a routerLink="/snippets/add" class="btn btn-primary btn-lg"> Create Your First Snippet </a>
+  </div>
+</div>

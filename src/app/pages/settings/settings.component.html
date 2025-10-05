@@ -1,0 +1,125 @@
+<div class="settings-container">
+  <div class="page-header">
+    <h1>Settings</h1>
+    <p>Customize your Code Snippet Manager experience</p>
+  </div>
+
+  <div class="settings-sections">
+    <!-- General Settings -->
+    <div class="settings-section">
+      <h2>General</h2>
+      <div class="setting-item">
+        <label class="setting-label">
+          <span>Theme</span>
+          <select class="form-control" [value]="settings().theme" (change)="onThemeChange($event)">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+            <option value="auto">Auto</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="setting-item">
+        <label class="setting-label">
+          <span>Language</span>
+          <select
+            class="form-control"
+            [value]="settings().language"
+            (change)="onLanguageChange($event)"
+          >
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="setting-item">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            [checked]="settings().autoSave"
+            (change)="onAutoSaveChange($event)"
+          />
+          <span class="checkmark"></span>
+          Auto-save changes
+        </label>
+      </div>
+    </div>
+
+    <!-- Editor Settings -->
+    <div class="settings-section">
+      <h2>Editor</h2>
+      <div class="setting-item">
+        <label class="setting-label">
+          <span>Font Size</span>
+          <input
+            type="range"
+            min="10"
+            max="24"
+            [value]="settings().fontSize"
+            (input)="onFontSizeChange($event)"
+            class="slider"
+          />
+          <span class="slider-value">{{ settings().fontSize }}px</span>
+        </label>
+      </div>
+
+      <div class="setting-item">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            [checked]="settings().showLineNumbers"
+            (change)="onShowLineNumbersChange($event)"
+          />
+          <span class="checkmark"></span>
+          Show line numbers
+        </label>
+      </div>
+    </div>
+
+    <!-- Data Management -->
+    <div class="settings-section">
+      <h2>Data Management</h2>
+      <div class="setting-item">
+        <label class="setting-label">
+          <span>Export Data</span>
+          <button class="btn btn-primary" (click)="exportData()">📥 Export All Data</button>
+        </label>
+        <p class="setting-description">
+          Download a backup of all your snippets, categories, and tags.
+        </p>
+      </div>
+
+      <div class="setting-item">
+        <label class="setting-label">
+          <span>Import Data</span>
+          <input type="file" accept=".json" (change)="importData($event)" class="file-input" />
+        </label>
+        <p class="setting-description">Import data from a previously exported backup file.</p>
+      </div>
+
+      <div class="setting-item">
+        <label class="setting-label">
+          <span>Clear All Data</span>
+          <button class="btn btn-danger" (click)="clearAllData()">🗑️ Clear All Data</button>
+        </label>
+        <p class="setting-description">
+          Permanently delete all snippets, categories, and tags. This action cannot be undone!
+        </p>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="settings-section">
+      <h2>About</h2>
+      <div class="about-info">
+        <p><strong>Code Snippet Manager</strong></p>
+        <p>Version 1.0.0</p>
+        <p>Built with Angular 20 and modern web technologies.</p>
+        <p>Your data is stored locally in your browser.</p>
+      </div>
+    </div>
+  </div>
+</div>

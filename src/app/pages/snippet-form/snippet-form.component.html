@@ -1,0 +1,126 @@
+<div class="snippet-form-container">
+  <div class="form-header">
+    <h1>{{ isEditMode() ? 'Edit Snippet' : 'Add New Snippet' }}</h1>
+    <div class="form-actions">
+      <button class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+      <button class="btn btn-primary" (click)="onSubmit()">
+        {{ isEditMode() ? 'Update Snippet' : 'Create Snippet' }}
+      </button>
+    </div>
+  </div>
+
+  <form class="snippet-form" (ngSubmit)="onSubmit()">
+    <div class="form-row">
+      <div class="form-group col-8">
+        <label class="form-label">Title *</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter snippet title"
+          [value]="formData().title"
+          (input)="onTitleInput($event)"
+          required
+        />
+      </div>
+
+      <div class="form-group col-4">
+        <label class="form-label">Language *</label>
+        <select
+          class="form-control"
+          [value]="formData().language"
+          (change)="onLanguageChange($event)"
+          required
+        >
+          <option *ngFor="let lang of availableLanguages" [value]="lang">
+            {{ lang | titlecase }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea
+        class="form-control"
+        placeholder="Describe what this snippet does"
+        rows="3"
+        [value]="formData().description"
+        (input)="onDescriptionInput($event)"
+      ></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-6">
+        <label class="form-label">Category</label>
+        <select
+          class="form-control"
+          [value]="formData().category"
+          (change)="onCategoryChange($event)"
+        >
+          <option value="">Select a category</option>
+          <option *ngFor="let category of categories()" [value]="category.name">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label">Tags</label>
+        <div class="tag-input-container">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Add a tag and press Enter"
+            [value]="newTag()"
+            (input)="onNewTagInput($event)"
+            (keypress)="onKeyPress($event)"
+          />
+          <button type="button" class="btn btn-sm btn-secondary" (click)="addTag()">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" *ngIf="formData().tags.length > 0">
+      <label class="form-label">Current Tags</label>
+      <div class="tags-container">
+        <span class="tag" *ngFor="let tag of formData().tags">
+          #{{ tag }}
+          <button type="button" class="tag-remove" (click)="removeTag(tag)">×</button>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Code *</label>
+      <div class="code-editor-container">
+        <textarea
+          class="form-control code-editor"
+          placeholder="Enter your code here..."
+          rows="15"
+          [value]="formData().code"
+          (input)="onCodeInput($event)"
+          required
+        ></textarea>
+        <div class="editor-info">
+          <span class="language-info">{{ formData().language | titlecase }}</span>
+          <span class="char-count">{{ formData().code.length }} characters</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox" [checked]="formData().isFavorite" (change)="toggleFavorite()" />
+        <span class="checkmark"></span>
+        Mark as favorite
+      </label>
+    </div>
+
+    <div class="form-footer">
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+      <button type="submit" class="btn btn-primary" (click)="onSubmit()">
+        {{ isEditMode() ? 'Update Snippet' : 'Create Snippet' }}
+      </button>
+    </div>
+  </form>
+</div>

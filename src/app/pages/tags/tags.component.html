@@ -1,0 +1,22 @@
+<div class="tags-container">
+  <div class="page-header">
+    <h1>Tags</h1>
+    <p>Manage your snippet tags</p>
+  </div>
+
+  <div class="tags-grid">
+    <div class="tag-card" *ngFor="let tag of tags()">
+      <div class="tag-info">
+        <h3>#{{ tag.name }}</h3>
+        <p>{{ tag.count }} snippet(s)</p>
+      </div>
+      <div class="tag-color" [style.background-color]="tag.color"></div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="tags().length === 0">
+    <div class="empty-icon">🏷️</div>
+    <h2>No Tags Yet</h2>
+    <p>Tags will appear here as you add them to your snippets.</p>
+  </div>
+</div>
