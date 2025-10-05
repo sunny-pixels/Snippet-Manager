@@ -11,10 +11,13 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-const MONGODB_URI =
-  process.env.MONGODB_URI ||
-  'mongodb+srv://spanox:spanox@cluster0.tgosqel.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const MONGODB_URI = process.env.MONGODB_URI;
 const DB_NAME = process.env.DB_NAME || 'code_snippet_manager';
+
+if (!MONGODB_URI) {
+  console.error('Missing MONGODB_URI. Set it in your environment (.env) or hosting provider.');
+  process.exit(1);
+}
 
 mongoose
   .connect(MONGODB_URI, { dbName: DB_NAME })

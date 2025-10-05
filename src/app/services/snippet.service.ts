@@ -2,6 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Snippet, Category, Tag, SearchFilters, SnippetStats } from '../models/snippet.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -62,7 +63,7 @@ export class SnippetService {
       console.log('🔄 Attempting to add snippet to database...');
 
       const response = await this.http
-        .post<any>('http://localhost:3000/api/snippets', snippet)
+        .post<any>(`${environment.apiBaseUrl}/api/snippets`, snippet)
         .toPromise();
 
       if (response && response._id) {
@@ -130,7 +131,7 @@ export class SnippetService {
       console.log('🔄 Attempting to delete snippet from database...');
 
       const response = await this.http
-        .delete(`http://localhost:3000/api/snippets/${id}`)
+        .delete(`${environment.apiBaseUrl}/api/snippets/${id}`)
         .toPromise();
 
       console.log('✅ SUCCESS: Snippet deleted from database!');
@@ -290,7 +291,9 @@ export class SnippetService {
   // API operations
   private async loadFromAPI(): Promise<void> {
     try {
-      const snippets = await this.http.get<any[]>('http://localhost:3000/api/snippets').toPromise();
+      const snippets = await this.http
+        .get<any[]>(`${environment.apiBaseUrl}/api/snippets`)
+        .toPromise();
 
       if (snippets) {
         const snippetData: Snippet[] = snippets.map((doc: any) => ({
